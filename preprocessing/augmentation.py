@@ -1,4 +1,5 @@
 import cv2
+import os
 
 green_arr = list()
 for i in range(125):
@@ -15,8 +16,8 @@ for image_type in image_types:
     name = 0
     for green in green_arr:
         for red in red_arr:
-            foreground = cv2.imread("dataset/train/{}/{}.png".format('red', green))
-            background = cv2.imread("dataset/train/{}/{}.png".format('red', red))
+            foreground = cv2.imread("dataset/train/{}/{}.png".format(image_type, green))
+            background = cv2.imread("dataset/train/{}/{}.png".format(image_type, red))
             alpha = cv2.imread("dataset/train/augmentation/{}.png".format(green))
 
             foreground = cv2.resize(foreground, (1469, 1008))
@@ -34,7 +35,13 @@ for image_type in image_types:
 
             outImage = cv2.add(foreground, background)
 
-            cv2.imwrite('dataset_augmentation/{}/{}.png'.format('red', name), outImage)
+            if not os.path.exists('dataset_augmentation'):
+                os.makedirs('dataset_augmentation')
+                os.makedirs('dataset_augmentation/red')
+                os.makedirs('dataset_augmentation/ndvi')
+                os.makedirs('dataset_augmentation/nir')
+                os.makedirs('dataset_augmentation/mask')
+            cv2.imwrite('dataset_augmentation/{}/{}.png'.format(image_type, name), outImage)
             name += 1
 
             # outImage = cv2.resize(outImage, (1600, 1000))
